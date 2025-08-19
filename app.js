@@ -11,13 +11,67 @@ const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
+// Allowed domains for form submissions
+const ALLOWED_DOMAINS = process.env.ALLOWED_DOMAINS
+  ? process.env.ALLOWED_DOMAINS.split(',')
+  : ['localhost'];
+
+// Domain validation middleware
+const validateDomain = (req, res, next) => {
+  const origin = req.get('origin');
+  const referer = req.get('referer');
+  
+  // Extract domain from origin or referer
+  let domain = null;
+  if (origin) {
+    try {
+      domain = new URL(origin).hostname;
+    } catch (e) {
+      // Invalid origin URL
+    }
+  } else if (referer) {
+    try {
+      domain = new URL(referer).hostname;
+    } catch (e) {
+      // Invalid referer URL
+    }
+  }
+
+  // Check if domain is allowed
+  if (!domain || !ALLOWED_DOMAINS.includes(domain)) {
+    return res.status(403).json({
+      success: false,
+      error: 'Forbidden: Domain not authorized for form submissions'
+    });
+  }
+
+  next();
+};
+
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests) for development
+    if (!origin) return callback(null, true);
+    
+    try {
+      const hostname = new URL(origin).hostname;
+      if (ALLOWED_DOMAINS.includes(hostname)) {
+        return callback(null, true);
+      }
+    } catch (e) {
+      // Invalid origin URL
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
 app.use(express.urlencoded({ extended: true }));
 
 // Route to handle form submission
-app.post('/gpu-requests', async (req, res) => {
+app.post('/gpu-requests', validateDomain, async (req, res) => {
   try {
     const { firstName, lastName, email, gpuType, quantity, message } = req.body;
 
