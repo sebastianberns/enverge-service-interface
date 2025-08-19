@@ -35,7 +35,7 @@ app.post('/gpu-requests', async (req, res) => {
         database_id: process.env.NOTION_DATABASE_ID,
       },
       properties: {
-        'First Name': {
+        'First name': {
           title: [
             {
               text: {
@@ -44,7 +44,7 @@ app.post('/gpu-requests', async (req, res) => {
             },
           ],
         },
-        'Last Name': {
+        'Last name': {
           rich_text: [
             {
               text: {
@@ -56,7 +56,7 @@ app.post('/gpu-requests', async (req, res) => {
         'Email': {
           email: email,
         },
-        'GPU Type': {
+        'GPU type': {
           select: {
             name: gpuType,
           },
@@ -73,7 +73,7 @@ app.post('/gpu-requests', async (req, res) => {
             },
           ],
         },
-        'Submission Date': {
+        'Submission time': {
           date: {
             start: new Date().toISOString(),
           },
