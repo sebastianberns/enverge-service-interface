@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 const express = require('express');
 const { Client } = require('@notionhq/client');
 const cors = require('cors');
@@ -73,10 +75,10 @@ app.use(express.urlencoded({ extended: true }));
 // Route to handle form submission
 app.post('/gpu-requests', validateDomain, async (req, res) => {
   try {
-    const { firstName, lastName, email, gpuType, quantity, message } = req.body;
+    const { firstName, lastName, email, gpuType, quantity, price, message } = req.body;
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !gpuType || !quantity) {
+    if (!firstName || !lastName || !email || !gpuType || !quantity || !price) {
       return res.status(400).json({
         success: false,
         error: 'Missing required fields: firstName, lastName, email, gpuType, and quantity are required'
@@ -117,6 +119,9 @@ app.post('/gpu-requests', validateDomain, async (req, res) => {
         },
         'Quantity': {
           number: parseInt(quantity),
+        },
+        'Price': {
+          number: parseFloat(price),
         },
         'Message': {
           rich_text: [
