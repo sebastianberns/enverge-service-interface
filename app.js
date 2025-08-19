@@ -88,10 +88,11 @@ app.post('/gpu-requests', validateDomain, async (req, res) => {
     // Create new page in Notion database
     const response = await notion.pages.create({
       parent: {
-        database_id: process.env.NOTION_DATABASE_ID,
+        "type": "database_id",
+        "database_id": process.env.NOTION_DATABASE_ID,
       },
       properties: {
-        'First name': {
+        "First name": {
           title: [
             {
               text: {
@@ -100,7 +101,7 @@ app.post('/gpu-requests', validateDomain, async (req, res) => {
             },
           ],
         },
-        'Last name': {
+        "Last name": {
           rich_text: [
             {
               text: {
@@ -109,21 +110,21 @@ app.post('/gpu-requests', validateDomain, async (req, res) => {
             },
           ],
         },
-        'Email': {
+        "Email": {
           email: email,
         },
-        'GPU type': {
+        "GPU type": {
           select: {
             name: gpuType,
           },
         },
-        'Quantity': {
+        "Quantity": {
           number: parseInt(quantity),
         },
-        'Price': {
+        "Price": {
           number: parseFloat(price),
         },
-        'Message': {
+        "Message": {
           rich_text: [
             {
               text: {
@@ -132,7 +133,7 @@ app.post('/gpu-requests', validateDomain, async (req, res) => {
             },
           ],
         },
-        'Submission time': {
+        "Submission time": {
           date: {
             start: new Date().toISOString(),
           },
