@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 // Route to handle form submission
-app.post('/submit-form', async (req, res) => {
+app.post('/gpu-requests', async (req, res) => {
   try {
     const { firstName, lastName, email, gpuType, quantity, message } = req.body;
 
